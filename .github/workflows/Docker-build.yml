@@ -23,15 +23,12 @@ jobs:
     - name: Build and Push Container Image
       env:
         COMMIT_HASH: ${{ github.sha }}
-        IMAGE_NAME: ppe
       run: |
-        docker build -t $IMAGE_NAME:$COMMIT_HASH .
+        docker build -t 2027-ecr .
         
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          echo "Pushing Docker image with 'latest' tag..."
-          docker tag $IMAGE_NAME:$COMMIT_HASH $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:latest
+          docker tag 2027-ecr:$COMMIT_HASHlatest 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
+          docker push 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
         fi
-
         echo "Pushing Docker image with commit hash tag..."
         docker push $IMAGE_NAME:$COMMIT_HASH
