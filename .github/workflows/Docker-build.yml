@@ -23,8 +23,7 @@ jobs:
     - name: Build and Push Container Image
       env:
         COMMIT_HASH: ${{ github.sha }}
-      run:
-        docker build -t 2027-ecr .
-        docker tag 2027-ecr:$COMMIT_HASHlatest 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
-        docker push 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
+      run: docker build -t 2027-ecr .
+    - run: docker tag 2027-ecr:latest 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
+    - run: docker push 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
 
