@@ -23,8 +23,8 @@ jobs:
           rev=$(git rev-parse --short HEAD)
           docker build . -t ppt
           docker tag ppt 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:$rev
-          docker tag ppt 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            docker tag ppt 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
             docker push 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
             docker push 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:$rev
           fi
