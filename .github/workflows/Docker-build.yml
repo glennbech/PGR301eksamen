@@ -11,19 +11,16 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Set up AWS CLI
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-1
-
-    - name: Build and Push Container Image
+    - name: Build and push Docker image
       env:
         COMMIT_HASH: ${{ github.sha }}
-      run: docker build -t 2027-ecr .
-    - run: docker tag 2027-ecr:latest 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
-    - run: docker push 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
-
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+          aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 244530008913.dkr.ecr.eu-west-1.amazonaws.com
+          rev=$(git rev-parse --short HEAD)
+          docker build . -t ppt:
+          docker tag ppt$COMMIT_HASH 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:$rev
+          docker tag ppt$COMMIT_HASH 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
