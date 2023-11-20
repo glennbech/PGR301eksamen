@@ -13,7 +13,7 @@ resource "aws_apprunner_service" "service" {
       image_configuration {
         port = "8080"
       }
-      image_identifier      = "244530008913.dkr.ecr.eu-west-1.amazonaws.com/kjell:latest"
+      image_identifier      = "image_identifier"
       image_repository_type = "ECR"
     }
     auto_deployments_enabled = true
