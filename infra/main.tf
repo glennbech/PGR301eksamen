@@ -18,6 +18,10 @@ resource "aws_apprunner_service" "service" {
     }
     auto_deployments_enabled = true
   }
+ instance_configuration{
+  cpu = 256
+  memory = 1024
+ }
 }
 
 resource "aws_iam_role" "role_for_apprunner_service" {
