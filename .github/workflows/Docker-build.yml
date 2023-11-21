@@ -37,7 +37,9 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: eu-west-1
       IMAGE: 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
-      PREFIX: glennbech3
+      PREFIX: linrob16
+      iam_role: candidate-2027-role
+      iam_policy: candidate-2027-policy
     steps:
       - uses: actions/checkout@v3
    
@@ -53,7 +55,7 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         working-directory: ./infra
-        run: terraform plan   -var="instance_name=$PREFIX" -var="image_identifier=$IMAGE"  -no-color
+        run: terraform plan   -var="instance_name=$PREFIX" -var="image_identifier=$IMAGE" -var="iam_role=$iam_role" -var="iam_policy=$iam_policy"  -no-color
         continue-on-error: true
 
       - name: Terraform Plan Status
@@ -64,4 +66,4 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: ./infra
-        run: terraform apply -var="instance_name=linrob16" -var="image_identifier=$IMAGE"  -auto-approve
+        run: terraform apply -var="instance_name=$PREFIX" -var="image_identifier=$IMAGE" -var="iam_role=$iam_role" -var="iam_policy=$iam_policy"  -auto-approve
