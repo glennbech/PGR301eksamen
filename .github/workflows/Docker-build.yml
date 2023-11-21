@@ -64,4 +64,4 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: ./infra
-        run: terraform apply -var="instance_name=linrob16" -var="image_identifier=244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest"  -auto-approve
+        run: terraform apply -var="instance_name=linrob16" -var="image_identifier=$IMAGE"  -auto-approve
