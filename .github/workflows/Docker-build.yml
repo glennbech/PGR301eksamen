@@ -40,7 +40,7 @@ jobs:
       PREFIX: glennbech3
     steps:
       - name: cd
-      - run: cd infra
+        run: cd infra
       
       - uses: actions/checkout@v3
       - name: Setup Terraform
