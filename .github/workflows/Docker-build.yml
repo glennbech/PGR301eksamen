@@ -39,10 +39,12 @@ jobs:
       IMAGE: 244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr:latest
       PREFIX: glennbech3
     steps:
-      - name: cd
-        run: cd infra
-      
       - uses: actions/checkout@v3
+
+      - name: working directory
+        run: cd infra
+        working-directory: infra
+      
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
