@@ -2,7 +2,7 @@ resource "aws_apprunner_service" "service" {
   service_name = var.instance_name
 
   instance_configuration {
-    instance_role_arn = aws_iam_role.role_for_apprunner_service.arn,
+    instance_role_arn = aws_iam_role.role_for_apprunner_service.arn
     "Cpu": "0.25 vCPU",
     "Memory": "1 GB"
   }
