@@ -2,8 +2,12 @@
 - generer en access key for aws cli
 - naviger til repository settings -> secrets and variables -> actions
 - her lag 2 nye repository secrets. navn: AWS_ACCESS_KEY_ID med tegnene fra access key til aws nøkkelen. navn: AWS_SECRET_ACCESS_KEY med tegnene fra Secret access key til aws nøkkelen.
+- eventuelt endre aws-region hvis iam rollen trenger det.
 3B:
-- 
+- hvis man ikke har gjort det enda, følg stegene til 1A
+- hvis sensor ikke har tilgang til ecr bildet må sensor oprette sin egen ecr og endre alle instanser av: "244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr" til sit eget.
+- endre prefix under terraforn env i yml filen til sin egen bruker
+- hvis sensor ikke har tilgang til iam rollen og policien endre om nødvendig (tror ikke dette vil være nødvendig men vanskelig å sjekke uten en annen bruker)
 
 5A:
 CI er å hjelpe med å implementere kode fra flere utviklere som jobber på samme applisjon kontinuerling, ved hjelp av automatiske systemer som kan for eksempel bygge/compilere/publisere kode automatisk når utvikler committer sin kode.
