@@ -30,17 +30,6 @@ Jeg ville foretrukket DevOps hvis jeg skulle jobbe med et større system, eller 
 
 C:
 
+hvis funksjonen krever ekstra steg eller jobs på github actions ville jeg opprettet dem på forhånd før jeg committer funksjonen. jeg ville brukt micrometrics med alarmer til å overvåke den nye funksjonen, kanskje satt litt mer "agressive" alarmer så man får tidlig beskjed hvis funksjonen ikke fungerer som forventet. når jeg commter funskjonen til github repoet ville jeg så klart følge med på github actions for å se at alt fremdeles kjører som det skal. 
 
-Etablere og Bruke Feedback:
-
-Testing: Automatiserte tester, inkludert enhetstester, integrasjonstester og akseptansetester.
-Overvåking: Kontinuerlig overvåking av systemets ytelse i produksjon.
-
-Feedback for Kontinuerlig Forbedring:
-
-Iterativ utvikling: Bruk feedback til å iterere og forbedre funksjonaliteten.
-Overvåking og feilretting: Hold kontinuerlig overvåking for å oppdage og løse feil raskt.
-Integrasjon i Utviklingslivssyklusen:
-
-Tidlig fase: Få tidlig tilbakemelding fra brukere og automatiserte tester.
-Produksjon: Overvåking gir kontinuerlig tilbakemelding om ytelse og på
+feedbacken hjelper med kontinuerlig forbedring på flere måter. En god feilmelding som viser akkurat hva som hendte og hvor vil hjelpe å raskt kunne løse feilen, i tillegg kan den stoppe små feil som fort kan bygge seg opp om man ikke blir advart. en timer widget på cloudwatch kan hjelpe å itterere en funksjon til å enklerer se hvor det kan finnes bottlenecks. i en tidlig fase av utviklingen vil automatisert infrastruktur og tester lede til en raskere utviklingsprosess med mer solid kode. infrastrukturen vil gjøre det enklere for flere utviklerer å jobbe på samme prosjekt uten store merg conflikter. automatiserte tester vil føre til rask oppdagelse av feil, og dermed en sterkere kode base. I produksjons fasen vil overvåking og alarmer gi umidelbar tilbakemelding om noe uventet skulle skje med produksjonsmiljøet.
