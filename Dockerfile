@@ -8,5 +8,5 @@ FROM adoptopenjdk/openjdk11:alpine-slim
 COPY --from=builder /app/target/*.jar /app/application.jar
 ENV AWS_ACCESS_KEY_ID=XXX
 ENV AWS_SECRET_ACCESS_KEY=YYY
-ENV UCKET_NAME=candidate-2027
+ENV BUCKET_NAME=candidate-2027
 ENTRYPOINT ["java","-jar","/app/application.jar"]
