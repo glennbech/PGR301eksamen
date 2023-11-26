@@ -13,3 +13,8 @@ variable "iam_role"{
 variable "iam_policy"{
  type = string
 }
+
+variable "student_name" {
+  type = string
+  default = "linrob16"
+}
