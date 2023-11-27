@@ -15,6 +15,9 @@
 - jeg valgte timer på "public ResponseEntity<PPEResponse> scanFaceForPPE" for å kunne få tilbakemelding ved uventede problemer som store bøtte størrelser kan skape uforutsette problemer, og kunne få beskjed hvis applikasjonen tar uventet lang tid til å utføre opperasjonen
 - jeg valgte counter for den totale mengden bilder applikasjonen har gått gjennom for å kunne få en bedre oversikt over hvor mye applikasjonen blir brukt. en simpel counter for metode kall ville ikke være tilstrekkelig siden den ikke ser forskjellen på et kall med 100 bilder versus 50 kall med 1 bilde.
 
+4B:
+- jeg valgte å slå alarm ved mer eller lik 900 000ms tidsbruk på scanFaceForPPE metoden, så den vil si ifra om den plutselig bruker meget lang tid. det er lurt å kunne få alarm for dette siden den scaner buckets som vi ikke vet hva er i, og om det oppstår uventede interaksjoner med ukjente filtyper vil det være viktig å fikse feilen så fort som mulig  
+
 5A:
 CI er å hjelpe med å implementere kode fra flere utviklere som jobber på samme applisjon kontinuerling, ved hjelp av automatiske systemer som kan for eksempel bygge/compilere/publisere kode automatisk når utvikler committer sin kode.
 noen av fordelene med CI er man kan finne mulige feil og konflikter med en gang en utvikler committer sin kode, ved automatiske prosesser vil det redusere risiko for manuelle feil, siden man comitter hyppigere til den branchen man jobber med vil det bli mindre fare for kravsomme merg conflikter.
