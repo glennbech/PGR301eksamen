@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.s3rekognition;
 
 import io.micrometer.cloudwatch2.CloudWatchConfig;
 import io.micrometer.cloudwatch2.CloudWatchMeterRegistry;
@@ -11,9 +11,13 @@ import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Configuration
 public class MetricsConfig {
+    
+    private static final Logger log = Logger.getLogger(MetricsConfig.class.getName());
+    
     @Bean
     public CloudWatchAsyncClient cloudWatchAsyncClient() {
         return CloudWatchAsyncClient

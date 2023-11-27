@@ -18,25 +18,14 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Gauge;
 import org.springframework.beans.factory.annotation.Autowired;
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.annotation.Timed;
-// delete afterwards:
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.EventListener;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Optional.ofNullable;
-//
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,8 +43,9 @@ public class RekognitionController implements ApplicationListener<ApplicationRea
     private final AmazonRekognition rekognitionClient;
    
     private MeterRegistry meterRegistry;
-    //private Counter failedFaceCounter;
-    private Map<String, String> faceViolations = new HashMap();
+    private Map<String, String> violations = new HashMap();
+    private final Timer timer;
+    private final Counter imageCounter;
     
     
 
@@ -66,7 +56,8 @@ public class RekognitionController implements ApplicationListener<ApplicationRea
         this.s3Client = AmazonS3ClientBuilder.standard().build();
         this.rekognitionClient = AmazonRekognitionClientBuilder.standard().build();
         this.meterRegistry = meterRegistry;
-        //failedFaceCounter = meterRegistry.counter("failed_face.value");
+        this.timer = Timer.builder("scanFaceForPPE_timer").register(meterRegistry);
+        this.imageCounter = Counter.builder("image_counter").register(meterRegistry);
     }
     
     /**
@@ -79,9 +70,8 @@ public class RekognitionController implements ApplicationListener<ApplicationRea
      */
     @GetMapping(value = "/scan-ppe", consumes = "*/*", produces = "application/json")
     @ResponseBody
-    @Timed
-    public ResponseEntity<PPEResponse> scanForPPE(@RequestParam String bucketName) {
-        
+    public ResponseEntity<PPEResponse> scanFaceForPPE(@RequestParam String bucketName) {
+        Timer.Sample sample = Timer.start();
         // List all objects in the S3 bucket
         ListObjectsV2Result imageList = s3Client.listObjectsV2(bucketName);
 
@@ -111,8 +101,8 @@ public class RekognitionController implements ApplicationListener<ApplicationRea
             boolean violation = isViolation(result, "FACE");
             
             if(violation){
-                if (faceViolations.get(image.getKey()) == null) {
-                    faceViolations.put(image.getKey(), "violation");
+                if (violations.get(image.getKey()) == null) {
+                    violations.put(image.getKey(), "violation");
                     logger.info("added: " + image.getKey() + " to the violation list");
                 }
             }
@@ -122,29 +112,27 @@ public class RekognitionController implements ApplicationListener<ApplicationRea
             int personCount = result.getPersons().size();
             PPEClassificationResponse classification = new PPEClassificationResponse(image.getKey(), personCount, violation);
             classificationResponses.add(classification);
+            imageCounter.increment();
         }
         PPEResponse ppeResponse = new PPEResponse(bucketName, classificationResponses);
+        
+        sample.stop(timer);
+        
         return ResponseEntity.ok(ppeResponse);
     }
 
     @GetMapping(value = "/scan-ppe-helmet", consumes = "*/*", produces = "application/json")
     @ResponseBody
-    @Timed
-    public ResponseEntity<PPEResponse> scanHandsForPPE(@RequestParam String bucketName) {
-        // List all objects in the S3 bucket
+    public ResponseEntity<PPEResponse> scanHeadForPPE(@RequestParam String bucketName) {
         ListObjectsV2Result imageList = s3Client.listObjectsV2(bucketName);
 
-        // This will hold all of our classifications
         List<PPEClassificationResponse> classificationResponses = new ArrayList<>();
 
-        // This is all the images in the bucket
         List<S3ObjectSummary> images = imageList.getObjectSummaries();
 
-        // Iterate over each object and scan for PPE
         for (S3ObjectSummary image : images) {
             logger.info("scanning " + image.getKey());
 
-            // This is where the magic happens, use AWS rekognition to detect PPE
             DetectProtectiveEquipmentRequest request = new DetectProtectiveEquipmentRequest()
                     .withImage(new Image()
                             .withS3Object(new S3Object()
@@ -156,13 +144,19 @@ public class RekognitionController implements ApplicationListener<ApplicationRea
 
             DetectProtectiveEquipmentResult result = rekognitionClient.detectProtectiveEquipment(request);
 
-            // If any person on an image lacks PPE on the face, it's a violation of regulations
             boolean violation = isViolation(result, "HEAD");
+            
+            if(violation){
+                if (violations.get(image.getKey()) == null) {
+                    violations.put(image.getKey(), "violation");
+                    logger.info("added: " + image.getKey() + " to the violation list");
+                }
+            }
 
-            // Categorize the current image as a violation or not.
             int personCount = result.getPersons().size();
             PPEClassificationResponse classification = new PPEClassificationResponse(image.getKey(), personCount, violation);
             classificationResponses.add(classification);
+            imageCounter.increment();
         }
         PPEResponse ppeResponse = new PPEResponse(bucketName, classificationResponses);
         return ResponseEntity.ok(ppeResponse);
@@ -188,7 +182,7 @@ public class RekognitionController implements ApplicationListener<ApplicationRea
     */
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        Gauge.builder("account_count", faceViolations,
+        Gauge.builder("violations", violations,
                 b -> b.values().size()).register(meterRegistry);
     }
 }
