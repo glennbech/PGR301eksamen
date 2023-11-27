@@ -64,3 +64,9 @@ resource "aws_cloudwatch_dashboard" "main" {
 }
 DASHBOARD
 }
+
+module "alarm"{
+  source = "./alarm"
+  alarm_email = var.alarm_email
+  alarm_prefix = var.alarm_prefix
+}
