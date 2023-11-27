@@ -3,11 +3,17 @@
 - naviger til repository settings -> secrets and variables -> actions
 - her lag 2 nye repository secrets. navn: AWS_ACCESS_KEY_ID med tegnene fra access key til aws nøkkelen. navn: AWS_SECRET_ACCESS_KEY med tegnene fra Secret access key til aws nøkkelen.
 - eventuelt endre aws-region hvis iam rollen trenger det.
+
 3B:
 - hvis man ikke har gjort det enda, følg stegene til 1A
 - hvis sensor ikke har tilgang til ecr bildet må sensor oprette sin egen ecr og endre alle instanser av: "244530008913.dkr.ecr.eu-west-1.amazonaws.com/2027-ecr" til sit eget.
 - endre prefix under terraforn env i yml filen til sin egen bruker
 - hvis sensor ikke har tilgang til iam rollen og policien endre om nødvendig (tror ikke dette vil være nødvendig men vanskelig å sjekke uten en annen bruker)
+
+4A:
+- jeg valgte gauge for hvor mange unike bilder systemet har sett. med tanke på videre utvikling om man vil legge til funksjoner for å manuelt se på bildene med violations og fjerne dem kan man ikke ha counter siden den ikke går ann å minske
+- jeg valgte timer på "public ResponseEntity<PPEResponse> scanFaceForPPE" for å kunne få tilbakemelding ved uventede problemer som store bøtte størrelser kan skape uforutsette problemer, og kunne få beskjed hvis applikasjonen tar uventet lang tid til å utføre opperasjonen
+- jeg valgte counter for den totale mengden bilder applikasjonen har gått gjennom for å kunne få en bedre oversikt over hvor mye applikasjonen blir brukt. en simpel counter for metode kall ville ikke være tilstrekkelig siden den ikke ser forskjellen på et kall med 100 bilder versus 50 kall med 1 bilde.
 
 5A:
 CI er å hjelpe med å implementere kode fra flere utviklere som jobber på samme applisjon kontinuerling, ved hjelp av automatiske systemer som kan for eksempel bygge/compilere/publisere kode automatisk når utvikler committer sin kode.
