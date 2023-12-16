@@ -25,7 +25,7 @@ variable "dashboard_name" {
 
 variable "alarm_prefix"{
     type = string
-    default = "linrob16"
+    default = "linrob16s"
 }
 
 variable "alarm_email"{
